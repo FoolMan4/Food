@@ -143,13 +143,14 @@ window.addEventListener('DOMContentLoaded', () => {
 
 
     class Card {
-        constructor(img, alt, title, paragraph, price, parentClass) {
+        constructor(img, alt, title, paragraph, price, parentClass, ...classes) {
             this.img = img;
             this.alt = alt;
             this.title = title;
             this.paragraph = paragraph;
             this.price = price;
             this.parent = document.querySelector(parentClass);
+            this.classes = classes;
             this.conver = 26;
             this.priceConver();
         }
@@ -161,8 +162,14 @@ window.addEventListener('DOMContentLoaded', () => {
         render() {
             const div = document.createElement('div');
 
+            if (this.classes.length === 0) {
+                this.div = 'menu__item';
+                div.classList.add(this.div);
+            } else {
+                this.classes.forEach(element => div.classList.add(element));
+            }
+
             div.innerHTML = `
-            <div class="menu__item">
                 <img src="${this.img}" alt="${this.alt}">
                 <h3 class="menu__item-subtitle">${this.title}</h3>
                 <div class="menu__item-descr">${this.paragraph}</div>
@@ -170,8 +177,7 @@ window.addEventListener('DOMContentLoaded', () => {
                 <div class="menu__item-price">
                     <div class="menu__item-cost">Цена:</div>
                     <div class="menu__item-total"><span>${this.price}</span> грн/день</div>
-                </div>
-            </div>`;
+                </div>`;
 
             this.parent.append(div);
 
@@ -184,7 +190,7 @@ window.addEventListener('DOMContentLoaded', () => {
         'Меню "Фитнес"',
         'Меню "Фитнес" - это новый подход к приготовлению блюд: больше свежих овощей и фруктов. Продукт активных и здоровых людей. Это абсолютно новый продукт с оптимальной ценой и высоким качеством!',
         9,
-        '.menu .container'
+        '.menu .container',
     ).render();
 
     new Card(
@@ -193,7 +199,7 @@ window.addEventListener('DOMContentLoaded', () => {
         'Меню “Премиум”',
         'В меню “Премиум” мы используем не только красивый дизайн упаковки, но и качественное исполнение блюд. Красная рыба, морепродукты, фрукты - ресторанное меню без похода в ресторан!',
         11,
-        '.menu .container'
+        '.menu .container',
     ).render();
 
 
