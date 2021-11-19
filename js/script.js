@@ -100,11 +100,15 @@ window.addEventListener('DOMContentLoaded', () => {
 
     triggerModal.forEach(btn => {
         btn.addEventListener('click', () => {
-            modal.classList.add('show');
-            modal.classList.remove('hide');
-            document.body.style.overflow = 'hidden';
+            openModal();
         });
     });
+
+    function openModal() {
+        modal.classList.add('show');
+        modal.classList.remove('hide');
+        document.body.style.overflow = 'hidden';
+    }
 
     function closeModal() {
         modal.classList.add('hide');
@@ -135,11 +139,6 @@ window.addEventListener('DOMContentLoaded', () => {
             console.log(`hello, ${this.name}`);
         }
     }
-
-    const misha = new User('misha', 28);
-
-    console.log(misha);
-    misha.hello();
 
 
     class Card {
@@ -212,7 +211,57 @@ window.addEventListener('DOMContentLoaded', () => {
         '.menu .container'
     ).render();
 
+    const forms = document.querySelectorAll('form');
 
+    const message = {
+        loading: 'Загрузка...',
+        success: 'Успешно',
+        failure: 'Ошибка'
+    };
+
+    forms.forEach(item => {
+        postData(item);
+    });
+
+    function postData(form) {
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const statusMessage = document.createElement('div');
+            statusMessage.classList.add('status');
+            statusMessage.textContent = message.loading;
+            form.append(statusMessage);
+
+            const request = new XMLHttpRequest();
+            request.open('POST', 'server.php');
+
+            request.setRequestHeader('content-type', 'application/json');
+
+            const object = {};
+            const formData = new FormData(form);
+
+            formData.forEach(function (value, key) {
+                object[key] = value;
+            });
+
+            const json = JSON.stringify(object);
+
+
+            request.send(json);
+            request.addEventListener('load', () => {
+                if (request.status === 200) {
+                    console.log(request.response);
+                    statusMessage.textContent = message.success;
+                    form.reset();
+                    setTimeout(() => {
+                        statusMessage.remove();
+                    }, (2000));
+                } else {
+                    statusMessage.textContent = message.failure;
+                }
+            });
+        });
+    }
 
 
 
